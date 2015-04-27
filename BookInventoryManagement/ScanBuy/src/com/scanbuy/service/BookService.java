@@ -15,7 +15,7 @@ public class BookService {
 		connection = DBUtility.getConnection();
 	}
 
-	public void addBook(BookInfo book) {
+	public String addBook(BookInfo book) {
 		try {
 
 			PreparedStatement preparedStatement = connection
@@ -27,11 +27,19 @@ public class BookService {
 			preparedStatement.setInt(4, book.getNumOfPages());
 			preparedStatement.setString(5, book.getRead());
 			preparedStatement.executeUpdate();
+			
+			return("Successfully Entered");
+			
+			
 
 		} catch (SQLException e) {
-			System.out.println("you cannot enter the same book");
+			
 			e.printStackTrace();
+			System.out.println("The exception is :"+e.getErrorCode());
+			return ("Unsuccessful");
 		}
+		
+		
 	}
 
 }
