@@ -8,7 +8,7 @@ public class BookInfo {
 	protected String authorName;
 	protected Integer numOfPages;
 	protected String read;
-	
+
 	/* getter and setter */
 	public long getBarcode() {
 		return barcode;
@@ -40,14 +40,5 @@ public class BookInfo {
 	public void setRead(String read) {
 		this.read = read;
 	}
-	
-	public String toString() {
-		return "BookInfo [Barcode=" + barcode + ", Name Of Book	=" + nameOfBook
-				+ ", Author's name=" + authorName + ", Number Of Pages="
-				+ numOfPages +", Read It="+read +"]";
-	}
-		
-
-	
 	
 }

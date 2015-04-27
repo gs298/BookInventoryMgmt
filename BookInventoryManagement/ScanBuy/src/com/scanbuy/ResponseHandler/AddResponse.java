@@ -1,4 +1,4 @@
-package com.scanbuy.addResponseHandler;
+package com.scanbuy.ResponseHandler;
 
 public class AddResponse {
 
