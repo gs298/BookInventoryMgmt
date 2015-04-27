@@ -3,17 +3,17 @@ package com.scanbuy.bean;
 
 public class BookInfo {
 
-	protected Integer barcode; 
+	protected Long barcode; 
 	protected String nameOfBook;
 	protected String authorName;
 	protected Integer numOfPages;
 	protected String read;
 	
 	/* getter and setter */
-	public int getBarcode() {
+	public long getBarcode() {
 		return barcode;
 	}
-	public void setBarcode(Integer barcode) {
+	public void setBarcode(Long barcode) {
 		this.barcode = barcode;
 	}
 	public String getNameOfBook() {

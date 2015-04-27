@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 import com.scanbuy.bean.BookInfo;
+import com.scanbuy.addResponseHandler.AddResponse;
 import com.scanbuy.utility.DBUtility;
 
 public class BookService {
@@ -15,30 +16,36 @@ public class BookService {
 		connection = DBUtility.getConnection();
 	}
 
-	public String addBook(BookInfo book) {
+	public AddResponse addBook(BookInfo book) {
+		AddResponse resp= new AddResponse();
 		try {
 
 			PreparedStatement preparedStatement = connection
 					.prepareStatement("insert into Book(id,name,author,page,rd) values (?,?, ?, ? ,?)");
 
-			preparedStatement.setInt(1, book.getBarcode());
+			preparedStatement.setLong(1, book.getBarcode());
 			preparedStatement.setString(2, book.getNameOfBook());
 			preparedStatement.setString(3, book.getAuthorName());
 			preparedStatement.setInt(4, book.getNumOfPages());
 			preparedStatement.setString(5, book.getRead());
 			preparedStatement.executeUpdate();
 			
-			return("Successfully Entered");
+			resp.setRespMessage("Successfully Added");
+			
+			return resp;
 			
 			
 
 		} catch (SQLException e) {
-			
-			e.printStackTrace();
-			System.out.println("The exception is :"+e.getErrorCode());
-			return ("Unsuccessful");
+			resp.setRespMessage("Can't Add \t"+ e.getMessage());
+			resp.seterrCode(""+e.getErrorCode());
+			return resp;
 		}
-		
+		catch (Exception e) {
+			resp.setRespMessage("Can't Add \t"+ e.getMessage());
+			resp.seterrCode(""+e.getMessage());
+			return resp;
+		}
 		
 	}
 
