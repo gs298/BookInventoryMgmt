@@ -7,6 +7,7 @@ import java.sql.SQLException;
 
 import com.scanbuy.bean.BookInfo;
 import com.scanbuy.ResponseHandler.AddResponse;
+import com.scanbuy.ResponseHandler.DeleteResponse;
 import com.scanbuy.ResponseHandler.GetResponse;
 import com.scanbuy.utility.DBUtility;
 
@@ -35,19 +36,15 @@ public class BookService {
 			preparedStatement.executeUpdate();
 
 			resp.setRespMessage("Successfully Added");
-
+			resp.setStatusMessage("SUCCESS");
 			return resp;
 
 		} catch (SQLException e) {
-			resp.setRespMessage("Can't Add \t" + e.getMessage());
-			resp.seterrCode("" + e.getErrorCode());
+			resp.setStatusMessage("UNSUCCESSFUL");
+			resp.setRespMessage(e.getMessage());
+			resp.setErrCode("" + e.getErrorCode());
 			return resp;
-		} catch (Exception e) {
-			resp.setRespMessage("Can't Add \t" + e.getMessage());
-			resp.seterrCode("" + e.getMessage());
-			return resp;
-		}
-
+		} 
 	}
 
 	public GetResponse getBookInfo(long barcode) {
@@ -64,7 +61,7 @@ public class BookService {
 						.prepareStatement("select * from Book where id=?");
 				preparedStatement.setLong(1, barcode);
 				rs = preparedStatement.executeQuery();
-				System.out.println("I am getting executed");
+			
 
 				if (rs.next()) {
 					book.setBarcode(rs.getLong("id"));
@@ -74,20 +71,21 @@ public class BookService {
 					book.setRead(rs.getString("rd"));
 				}
 				resp.setBook(book);
-				resp.setStatusMessage("Success");
+				resp.setStatusMessage("Record Exists");
+				resp.setStatusMessage("SUCCESS");
 
 			}
 
 			else {
-				System.out.println("NO such record exists");
-
-				resp.setStatusMessage("Unsuccessfull");
+				
+				resp.setRespMessage("No such record exists");
+				resp.setStatusMessage("UNSUCCESS");
 				
 
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
-			System.out.println("Exception here");
+			
 
 		}
 
@@ -97,9 +95,10 @@ public class BookService {
 
 	
 
-	public void deleteUser(long barcode) {
+	public DeleteResponse deleteUser(long barcode) {
+		DeleteResponse resp=new DeleteResponse();
 		try {
-
+			
 			int count = ifExists(barcode);
 
 			if (count != 0) {
@@ -107,16 +106,21 @@ public class BookService {
 						.prepareStatement("delete from Book where id=?");
 				preparedStatement.setLong(1, barcode);
 				preparedStatement.executeUpdate();
+				
+				resp.setStatusMessage("Record Exists");
+				resp.setStatusMessage("SUCCESS");
 			}
 
 			else {
-				System.out.println("NO such record exists");
+				resp.setRespMessage("No such record exists");
+				resp.setStatusMessage("UNSUCCESS");
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
-			System.out.println("Exception here");
+			
 
 		}
+		return resp;
 	}
 
 	public int ifExists(long barcode) {

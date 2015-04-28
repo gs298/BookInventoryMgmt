@@ -1,10 +1,6 @@
 package com.scanbuy.controller;
 
-import java.io.IOException;
 
-import javax.servlet.http.HttpServletResponse;
-
-import org.springframework.http.HttpEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -13,6 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.scanbuy.bean.BookInfo;
 import com.scanbuy.service.BookService;
 import com.scanbuy.ResponseHandler.AddResponse;
+import com.scanbuy.ResponseHandler.DeleteResponse;
 import com.scanbuy.ResponseHandler.GetResponse;
 
 @RestController
@@ -31,16 +28,29 @@ public class SpringServiceController {
 			@RequestParam("read") String read) {
 
 		AddResponse result = new AddResponse();
-
-		if (String.valueOf(id).length() > 13) {
+		int barcodeFlag=checkBarcode(id);
+		
+		if (barcodeFlag==0) {
 			result.setRespMessage("Barcode greater than 12 digits");
+			result.setStatusMessage("UNSUCCESSFUL");
 			return result;
 		}
-		else if (String.valueOf(id).length() < 5) {
-			result.setRespMessage("Barcode should be minimum 5 digits");
+		else if (barcodeFlag==1) {
+			result.setRespMessage("Barcode field cannot be empty");
+			result.setStatusMessage("UNSUCCESSFUL");
 			return result;
 		}
-
+		 if (name.equals("") || author.equals("") ||String.valueOf(pageNum).equals("") || read.equals("")) {
+			result.setRespMessage("Please fill in the empty fields");
+			result.setStatusMessage("UNSUCCESSFUL");
+			return result;
+		}
+		
+		 if (!read.equals("yes") && !read.equals("no")) {
+			result.setRespMessage("Read field accepts only yes/no");
+			result.setStatusMessage("UNSUCCESSFUL");
+			return result;
+		}
 		BookInfo book = new BookInfo();
 
 		book.setBarcode(id);
@@ -59,23 +69,42 @@ public class SpringServiceController {
 
 	@RequestMapping(value = "/getBookInfo", method = { RequestMethod.GET,
 			RequestMethod.POST }, headers = "Accept=application/json")
-	public GetResponse getUser(@RequestParam("barcode") long id,HttpServletResponse response){
+	public GetResponse getUser(@RequestParam("barcode") long id){
 
-		GetResponse book = bookService.getBookInfo(id);
-		if (response.getStatus() == 200) {
-            System.out.println("Status 200");
-        }
-		return book;
+        int barcodeFlag=checkBarcode(id);
+		GetResponse resp=new GetResponse();
+		if (barcodeFlag==0) {
+			resp.setRespMessage("Barcode greater than 12 digits");
+			resp.setStatusMessage("UNSUCCESSFUL");
+			
+		}
+		resp = bookService.getBookInfo(id);
+		return resp;
 	}
 	
 	/*********** Request mapping for deleting book, which takes 1 RquestParameters *********/
 	@RequestMapping(value = "/deleteBook", method = { RequestMethod.GET,
 			RequestMethod.POST },headers="Accept=application/json")
-	public void deleteUser(@RequestParam("barcode") long id) {
-		System.out.println("Hi I am in deleteUser");
+	public DeleteResponse deleteUser(@RequestParam("barcode") long id) {
+		DeleteResponse resp=new DeleteResponse();
+		int barcodeFlag=checkBarcode(id);
+		if (barcodeFlag==0) {
+			resp.setRespMessage("Barcode greater than 12 digits");
+			resp.setStatusMessage("UNSUCCESSFUL");
+			
+		}
 		
-		bookService.deleteUser(id);
-		//return user;
+		 resp=bookService.deleteUser(id);
+		return resp;
+	}
+	
+	/***** barcode validation *****/
+	int checkBarcode(long barcode){
+		
+		if(String.valueOf(barcode).length()>12){
+			return 0;
+		}
+		return 1;
 	}
 
 }

@@ -1,9 +1,7 @@
 package com.scanbuy.ResponseHandler;
 
-import com.scanbuy.bean.BookInfo;
-public class GetResponse {
+public class DeleteResponse {
 	
-	BookInfo book;
 	String statusMessage;
 	String respMessage;
 	public String getRespMessage() {
@@ -12,19 +10,10 @@ public class GetResponse {
 	public void setRespMessage(String respMessage) {
 		this.respMessage = respMessage;
 	}
-	public BookInfo getBook() {
-		return book;
-	}
-	public void setBook(BookInfo book) {
-		this.book = book;
-	}
 	public String getStatusMessage() {
 		return statusMessage;
 	}
 	public void setStatusMessage(String statusMessage) {
 		this.statusMessage = statusMessage;
 	}
-	
-	
-	
 }
