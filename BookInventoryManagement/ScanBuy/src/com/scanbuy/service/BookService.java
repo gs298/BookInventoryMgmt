@@ -44,12 +44,12 @@ public class BookService {
 			resp.setRespMessage(e.getMessage());
 			resp.setErrCode("" + e.getErrorCode());
 			return resp;
-		} 
+		}
 	}
 
 	public GetResponse getBookInfo(long barcode) {
 		BookInfo book = new BookInfo();
-		GetResponse resp=new GetResponse();
+		GetResponse resp = new GetResponse();
 		int count;
 
 		try {
@@ -61,7 +61,6 @@ public class BookService {
 						.prepareStatement("select * from Book where id=?");
 				preparedStatement.setLong(1, barcode);
 				rs = preparedStatement.executeQuery();
-			
 
 				if (rs.next()) {
 					book.setBarcode(rs.getLong("id"));
@@ -77,15 +76,14 @@ public class BookService {
 			}
 
 			else {
-				
-				resp.setRespMessage("No such record exists");
+
+				resp.setRespMessage("Record with barcode:" + barcode + ""
+						+ " don't exists");
 				resp.setStatusMessage("UNSUCCESS");
-				
 
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
-			
 
 		}
 
@@ -93,12 +91,10 @@ public class BookService {
 
 	}
 
-	
-
 	public DeleteResponse deleteUser(long barcode) {
-		DeleteResponse resp=new DeleteResponse();
+		DeleteResponse resp = new DeleteResponse();
 		try {
-			
+
 			int count = ifExists(barcode);
 
 			if (count != 0) {
@@ -106,18 +102,18 @@ public class BookService {
 						.prepareStatement("delete from Book where id=?");
 				preparedStatement.setLong(1, barcode);
 				preparedStatement.executeUpdate();
-				
+
 				resp.setStatusMessage("Record Exists");
 				resp.setStatusMessage("SUCCESS");
 			}
 
 			else {
-				resp.setRespMessage("No such record exists");
+				resp.setRespMessage("Record with barcode:" + barcode + ""
+						+ " don't exists");
 				resp.setStatusMessage("UNSUCCESS");
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
-			
 
 		}
 		return resp;
